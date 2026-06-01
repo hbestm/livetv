@@ -28,6 +28,14 @@ var defaultConfigValue = map[string]string{
 }
 
 var (
+	// PlatformArgs defines additional yt-dlp arguments per platform.
+	// These are appended after the user-configured ytdl_args.
+	PlatformArgs = map[string]string{
+		"youtube":  "",
+		"bilibili": "--extractor-args \"bilibili:web_use_https=true\"",
+		"twitch":   "--twitch-disable-ads",
+	}
+
 	HttpClientTimeout = 30 * time.Second
 	ConfigCache       sync.Map
 	URLCache          sync.Map

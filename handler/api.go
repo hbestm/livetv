@@ -99,6 +99,7 @@ func IndexHandler(c *gin.Context) {
 			URL:       v.URL,
 			M3U8:      service.BuildLiveM3U8URL(baseUrl, channelParam, channelID),
 			Proxy:     v.Proxy,
+			Platform:  v.Platform,
 			GroupName: v.GroupName,
 		}
 	}
@@ -231,6 +232,7 @@ func NewChannelHandler(c *gin.Context) {
 	chURL := c.PostForm("url")
 	chCustomID := strings.TrimSpace(c.PostForm("custom_id"))
 	chGroupName := strings.TrimSpace(c.PostForm("group_name"))
+	chPlatform := strings.TrimSpace(c.PostForm("platform"))
 	if chName == "" || chURL == "" {
 		c.Redirect(http.StatusFound, "/")
 		return
@@ -241,6 +243,7 @@ func NewChannelHandler(c *gin.Context) {
 		Name:      chName,
 		URL:       chURL,
 		Proxy:     chProxy,
+		Platform:  chPlatform,
 		GroupName: chGroupName,
 	}
 	err := service.SaveChannel(mch)
@@ -299,6 +302,7 @@ func UpdateChannelHandler(c *gin.Context) {
 	chURL := c.PostForm("url")
 	chCustomID := strings.TrimSpace(c.PostForm("custom_id"))
 	chGroupName := strings.TrimSpace(c.PostForm("group_name"))
+	chPlatform := strings.TrimSpace(c.PostForm("platform"))
 	if chName == "" || chURL == "" {
 		c.Redirect(http.StatusFound, "/")
 		return
@@ -317,6 +321,7 @@ func UpdateChannelHandler(c *gin.Context) {
 		Name:      chName,
 		URL:       chURL,
 		Proxy:     chProxy,
+		Platform:  chPlatform,
 		GroupName: chGroupName,
 	}
 	err = service.SaveChannel(mch)

@@ -23,6 +23,9 @@ func InitDB(filepath string) (err error) {
 	if err := migrateChannelGroups(); err != nil {
 		return err
 	}
+	if err := migrateChannelPlatform(); err != nil {
+		return err
+	}
 	for key, valueDefault := range defaultConfigValue {
 		var valueInDB model.Config
 		err = DB.Where("name = ?", key).First(&valueInDB).Error
@@ -39,6 +42,18 @@ func InitDB(filepath string) (err error) {
 		} else {
 			ConfigCache.Store(key, valueInDB.Data)
 		}
+	}
+	return nil
+}
+
+func migrateChannelPlatform() error {
+	// AutoMigrate handles adding the column for new installs.
+	// For existing databases, set default for rows with empty platform.
+	if err := DB.Model(&model.Channel{}).Where("platform IS NULL OR platform = ''").
+		Update("platform", "youtube").Error; err != nil {
+		// Column might not exist yet on very first run after upgrade;
+		// AutoMigrate above should have added it. If not, this is a soft error.
+		log.Printf("migrate platform (non-fatal): %v", err)
 	}
 	return nil
 }

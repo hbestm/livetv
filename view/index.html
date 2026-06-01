@@ -45,6 +45,14 @@
               <label for="inputChannelLiveURL">URL</label>
               <input type="text" class="form-control" id="inputChannelLiveURL" name="url">
             </div>
+            <div class="form-group">
+              <label for="inputChannelPlatform">Platform</label>
+              <select class="form-control" id="inputChannelPlatform" name="platform">
+                <option value="youtube">YouTube</option>
+                <option value="bilibili">Bilibili</option>
+                <option value="twitch">Twitch</option>
+              </select>
+            </div>
             <div class="checkbox">
               <label>
                 <input type="checkbox" id="inputChannelProxy" name="proxy">Proxy stream
@@ -59,6 +67,7 @@
               <th>#</th>
               <th>Custom ID</th>
               <th>Channel</th>
+              <th>Platform</th>
               <th>Group</th>
               <th>Live</th>
               <th>M3U8</th>
@@ -70,13 +79,14 @@
               <td>{{.ID}}</td>
               <td>{{ if .CustomID }}{{.CustomID}}{{ else }}-{{ end }}</td>
               <td>{{.Name}}</td>
+              <td>{{ if .Platform }}{{.Platform}}{{ else }}youtube{{ end }}</td>
               <td>{{ if eq .ID 0 }}-{{ else }}{{ if .GroupName }}{{.GroupName}}{{ else }}youtube{{ end }}{{ end }}</td>
               <td>{{.URL}}</td>
               <td>{{.M3U8}}</td>
               <td>{{ if .Proxy }}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{ end }}</td>
               <td>
                 {{ if ne .ID 0 }}
-                  <a href="#" class="edit-channel" data-id="{{.ID}}" data-name="{{.Name}}" data-customid="{{.CustomID}}" data-group="{{ if .GroupName }}{{.GroupName}}{{ else }}youtube{{ end }}" data-url="{{.URL}}" data-proxy="{{.Proxy}}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                  <a href="#" class="edit-channel" data-id="{{.ID}}" data-name="{{.Name}}" data-customid="{{.CustomID}}" data-group="{{ if .GroupName }}{{.GroupName}}{{ else }}youtube{{ end }}" data-url="{{.URL}}" data-proxy="{{.Proxy}}" data-platform="{{ if .Platform }}{{.Platform}}{{ else }}youtube{{ end }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
                   <a href="/api/delchannel?id={{.ID}}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                 {{ end }}
               </td>
@@ -231,6 +241,7 @@
         $("#inputChannelCustomID").val("");
         $("#inputChannelGroupName").val("");
         $("#inputChannelLiveURL").val("");
+        $("#inputChannelPlatform").val("youtube");
         $("#inputChannelProxy").prop("checked", false);
         $("#channel-submit-btn").text("Add Channel");
         $("#channel-cancel-btn").hide();
@@ -244,6 +255,7 @@
         $("#inputChannelCustomID").val($el.attr("data-customid") || "");
         $("#inputChannelGroupName").val($el.attr("data-group") || "");
         $("#inputChannelLiveURL").val($el.attr("data-url") || "");
+        $("#inputChannelPlatform").val($el.attr("data-platform") || "youtube");
         $("#inputChannelProxy").prop("checked", ($el.attr("data-proxy") || "") === "true");
         $("#channel-submit-btn").text("Save");
         $("#channel-cancel-btn").show();

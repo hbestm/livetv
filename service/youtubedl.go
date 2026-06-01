@@ -118,6 +118,11 @@ func RealGetYoutubeLiveM3U8(youtubeURL string) (string, error) {
 		}
 		ytdlArgs = append(ytdlArgs, "--cookies", ytdlCookies)
 	}
+	// Append platform-specific extra args
+	platform := DetectPlatform(youtubeURL)
+	if extraArgs := PlatformExtraArgs(platform); extraArgs != "" {
+		ytdlArgs = append(ytdlArgs, splitArgs(extraArgs)...)
+	}
 	_, err = exec.LookPath(YtdlCmd)
 	if err != nil {
 		log.Println(err)
@@ -285,6 +290,29 @@ func NormalizeYoutubeURL(s string) string {
 		}
 	})
 	return strings.TrimSpace(s)
+}
+
+// DetectPlatform returns the platform name based on URL patterns.
+func DetectPlatform(url string) string {
+	url = strings.ToLower(url)
+	switch {
+	case strings.Contains(url, "bilibili.com") || strings.Contains(url, "b23.tv"):
+		return "bilibili"
+	case strings.Contains(url, "twitch.tv"):
+		return "twitch"
+	case strings.Contains(url, "youtube.com") || strings.Contains(url, "youtu.be"):
+		return "youtube"
+	default:
+		return "youtube"
+	}
+}
+
+// PlatformExtraArgs returns extra yt-dlp args for a given platform.
+func PlatformExtraArgs(platform string) string {
+	if args, ok := global.PlatformArgs[platform]; ok {
+		return args
+	}
+	return ""
 }
 
 func splitArgs(s string) []string {

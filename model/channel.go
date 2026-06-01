@@ -6,6 +6,7 @@ type Channel struct {
 	Name      string
 	URL       string
 	Proxy     bool
+	Platform  string `gorm:"column:platform;default:youtube;index"`
 	GroupName string `gorm:"column:group_name;index"`
 	GroupID   uint   `gorm:"column:group_id;index"`
 	Group     Group  `gorm:"foreignkey:GroupID"`
